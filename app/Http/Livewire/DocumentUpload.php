@@ -3,12 +3,9 @@
 namespace App\Http\Livewire;
 
 use Exception;
-use App\Models\Tag;
 use Livewire\Component;
 use App\Models\Document;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Rules\DocumentValidationRule;
 
@@ -22,24 +19,25 @@ class DocumentUpload extends Component
     public $tag;
     public $tags = [];
 
+    /* Method to upload a new document */
     public function upload()
     {
-        // Validation rules for the document and its metadata
-        $this->validate([
-            'title' => 'required|between:1,255',
-            'description' => 'max:255',
-            'document' => ['required', new DocumentValidationRule()],
-        ]);
-        
-        // Begins a transaction
-        DB::beginTransaction();
         try {
+            // Validation rules for the document and its metadata
+            $this->validate([
+                'title' => 'required|between:1,255',
+                'description' => 'max:255',
+                'document' => ['required', new DocumentValidationRule()],
+            ]);
+            
             // Gets the user id
             $userId = Auth::id();
+
+            // Store the document
             $generatedDocumentName = $this->document->store('uploads', 'local');
 
-            // Create a Document Model and set its attributes
-            $documentModel = Document::create([
+            // Put the document data into an array
+            $documentData = [
             'user_id'     => $userId,
             'title'       => $this->title,
             'description' => $this->description,
@@ -47,37 +45,24 @@ class DocumentUpload extends Component
             'mime_type'   => $this->document->getMimeType(),
             'file_name'   => $generatedDocumentName,
             'downloads'   => 0,
-            ]);
+            ];
 
-            // Setting up tags array to insert
-            $dbTags = [];
-            foreach ($this->tags as $tag) {
-                $dbTags[] = [
-                    'document_id' => $documentModel->id,
-                    'name' => $tag,
-                ];
-            }
-            // Inserting tags in database
-            Tag::insert($dbTags);
-            
+            Document::uploadDocument($documentData, $this->tags);
+
             // Clear input fields after file upload
             $this->title = '';
             $this->description = '';
             $this->document = '';
             $this->tags = [];
-
-            // Commit changes
-            DB::commit();
+        
             session()->flash('successMessage', 'File uploaded successfully!');
-
-        }
-        catch (Exception $ex) {
-            // Rollback changes
-            DB::rollBack();
+            
+        } catch (Exception $ex) {
             abort(500, 'Something went wrong.');
         }
     }
 
+    /* Method to add a new tag to tags array */
     public function addTag()
     {
         // Validation rules for tag
@@ -87,7 +72,7 @@ class DocumentUpload extends Component
 
         // Verify if there alredy are 5 tags or if tag already exists
         if (count($this->tags) >= 5) {
-            session()->flash('failMessage', 'There cannot be more than 5 tags.');
+            abort(500, 'Something went wrong.');
         } elseif (!in_array($this->tag, $this->tags)) {
             $this->tags[] = $this->tag;
             $this->tag = null;
@@ -95,9 +80,9 @@ class DocumentUpload extends Component
         $this->tag = null;
     }
 
+    /* Unset tag from tags array */
     public function removeTag($tagToRemove)
     {
-        // Unset tag from tags array
         unset($this->tags[$tagToRemove]);
     }
 

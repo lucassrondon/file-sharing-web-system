@@ -12,6 +12,31 @@
             <input value="{{ $description }}" type="text" id="document-description" wire:model="description" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring focus:border-blue-300">
             @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
+
+        <div class="mb-6">
+            <h1>Tags:</h1>
+
+            @if (count($tagsThatExist) + count($tagsToInsert) < 5)
+                <input type="text" id="tag" wire:model="tag" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring focus:border-blue-300">
+                <button type="button" class="" wire:click="addTag">
+                    AddTag
+                </button>
+            @endif
+
+            @foreach ($tagsThatExist as $index => $tag)
+                <button type="button" class="" wire:click="addTagToDeleteList( {{ $tag->id }})">
+                    {{ $tag->name }}
+                </button>
+            @endforeach
+
+            @foreach ($tagsToInsert as $index => $tag)
+                <button type="button" class="" wire:click="removeTagFromInsertList( {{ $index }})">
+                    {{ $tag }}
+                </button>
+            @endforeach
+
+            @error('tag') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
         
         <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-black py-3 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
             Save

@@ -14,4 +14,19 @@ class Tag extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
+    /* Insert an array of tags for a document */
+    public static function insertTags(int $documentId, array $tagsNames)
+    {
+        // Setting up tags array to insert
+        $dbTags = [];
+        foreach ($tagsNames as $tagName) {
+            $dbTags[] = [
+                'document_id' => $documentId,
+                'name' => $tagName,
+            ];
+        }
+        // Inserting tags in database
+        Tag::insert($dbTags);
+    }
 }
