@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire;
 
-use Exception;
 use Livewire\Component;
 use App\Models\Document;
+use App\Models\Institution;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use App\Rules\DocumentValidationRule;
@@ -18,18 +18,25 @@ class DocumentUpload extends Component
     public $document;
     public $tag;
     public $tags = [];
+    public $databaseInstitutions;
+    public $institution;
+
+    public function mount()
+    {
+        $this->databaseInstitutions = Institution::where('official', 1)->get();
+    }
 
     /* Method to upload a new document */
     public function upload()
     {
+        // Validation rules for the document and its metadata
+        $this->validate([
+            'title' => 'required|between:1,255',
+            'description' => 'max:255',
+            'document' => ['required', new DocumentValidationRule()],
+        ]);
+        
         try {
-            // Validation rules for the document and its metadata
-            $this->validate([
-                'title' => 'required|between:1,255',
-                'description' => 'max:255',
-                'document' => ['required', new DocumentValidationRule()],
-            ]);
-            
             // Gets the user id
             $userId = Auth::id();
 
@@ -57,7 +64,7 @@ class DocumentUpload extends Component
         
             session()->flash('successMessage', 'File uploaded successfully!');
             
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');
         }
     }

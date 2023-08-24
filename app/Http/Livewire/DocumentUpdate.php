@@ -5,7 +5,6 @@ namespace App\Http\Livewire;
 use App\Models\Tag;
 use Livewire\Component;
 use App\Models\Document;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentUpdate extends Component
@@ -78,7 +77,7 @@ class DocumentUpdate extends Component
         // Validation rules for the document and its metadata
         $this->validate([
             'title' => 'required|between:1,255',
-            'description' => 'required|between:1,255',
+            'description' => 'max:255',
         ]);
 
         try {

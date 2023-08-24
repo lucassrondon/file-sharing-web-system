@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->unsignedBigInteger('institution_id')->nullable();
+            $table->foreign('institution_id')->references('id')->on('institutions');
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->unsignedBigInteger('size');
             $table->string('mime_type');
             $table->string('file_name');

@@ -33,3 +33,5 @@ Route::middleware([
     Route::get('/document-update/{document}', DocumentUpdate::class)->name('document-update');
 });
 
+
+/* php artisan serve --host=0.0.0.0 --port=8000 */
