@@ -17,13 +17,14 @@
 
             <div>
                 <label for="document-institution" class="block font-medium text-sm text-gray-700">Institution:</label>
-                <select id="document-institution" wire:model="institution" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
-                    <option value="none"><p>None</p></option>
+                <input type="text" list="institutions" id="document-institution" wire:model="institution" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
+                
+                <datalist id="institutions">
                     @foreach ($databaseInstitutions as $institution)
-                        <option value="{{ $institution->id }}">{{ $institution->institution_name }}</option>
+                        <option value="{{ $institution->institution_name }}">
                     @endforeach
-                    <option value="other"><p>Other</p></option>
-                </select>
+                </datalist>
+
             </div>
 
             <div>

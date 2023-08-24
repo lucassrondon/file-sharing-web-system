@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Document extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'id',
         'user_id',
@@ -23,6 +21,8 @@ class Document extends Model
         'file_name',
         'downloads',
     ];
+
+    use HasFactory;
 
     public function user()
     {
@@ -69,7 +69,11 @@ class Document extends Model
     }
 
     /* Method to upload a document */
-    public static function uploadDocument(array $documentData, array $tags)
+    public static function uploadDocument(
+        array $documentData, 
+        string|null $institution, 
+        array $tags
+    )
     {
         try {
             // Begins a transaction
@@ -77,6 +81,13 @@ class Document extends Model
 
             // Create a Document Model and set its attributes
             $documentModel = self::create($documentData);
+
+            // If any name is passed as the institution of the file,
+            // this gets the id and save in the document.
+            if ($institution != null && strlen($institution) > 0) {
+                $documentModel->institution_id = Institution::getInstitutionId($institution);
+                $documentModel->save();
+            }
             
             // Inserting tags in database
             Tag::insertTags($documentModel->id, $tags);

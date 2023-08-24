@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('institution_type_id')->constrained('institution_types');
             $table->string('institution_name');
-            $table->boolean('official');
+            $table->boolean('official')->default(0);
             $table->timestamps();
         });
     }

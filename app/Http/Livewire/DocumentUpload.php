@@ -11,8 +11,6 @@ use App\Rules\DocumentValidationRule;
 
 class DocumentUpload extends Component
 {
-    use WithFileUploads;
-
     public $title;
     public $description;
     public $document;
@@ -20,19 +18,31 @@ class DocumentUpload extends Component
     public $tags = [];
     public $databaseInstitutions;
     public $institution;
+    
+    use WithFileUploads;
 
     public function mount()
     {
-        $this->databaseInstitutions = Institution::where('official', 1)->get();
+        /* Getting the trusted institutions to list as options */
+        $this->databaseInstitutions = Institution::where(
+            'official', 
+            1
+        )->get();
     }
 
     /* Method to upload a new document */
     public function upload()
-    {
+    {   
+        // Trimming values before using them
+        $this->title = trim($this->title);
+        $this->description = trim($this->description);
+        $this->institution = trim($this->institution);
+
         // Validation rules for the document and its metadata
         $this->validate([
             'title' => 'required|between:1,255',
             'description' => 'max:255',
+            'institution' => 'max:255',
             'document' => ['required', new DocumentValidationRule()],
         ]);
         
@@ -54,17 +64,25 @@ class DocumentUpload extends Component
             'downloads'   => 0,
             ];
 
-            Document::uploadDocument($documentData, $this->tags);
+            // Method that handles the upload
+            // Gets all the data of the document and saves it
+            Document::uploadDocument(
+                $documentData, 
+                $this->institution, 
+                $this->tags
+            );
 
             // Clear input fields after file upload
             $this->title = '';
             $this->description = '';
+            $this->institution = '';
             $this->document = '';
             $this->tags = [];
         
             session()->flash('successMessage', 'File uploaded successfully!');
             
         } catch (\Exception $ex) {
+            dd($ex->getMessage());
             abort(500, 'Something went wrong.');
         }
     }
@@ -72,9 +90,12 @@ class DocumentUpload extends Component
     /* Method to add a new tag to tags array */
     public function addTag()
     {
+        // Trimming values before using them
+        $this->tag = trim($this->tag);
+
         // Validation rules for tag
         $this->validate([
-            'tag' => 'between:1,255',
+            'tag' => 'required|between:1,255',
         ]);
 
         // Verify if there alredy are 5 tags or if tag already exists
