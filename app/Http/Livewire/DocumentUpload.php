@@ -95,7 +95,7 @@ class DocumentUpload extends Component
 
         // Validation rules for tag
         $this->validate([
-            'tag' => 'required|between:1,255',
+            'tag' => 'required|between:3,255',
         ]);
 
         // Verify if there alredy are 5 tags or if tag already exists

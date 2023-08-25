@@ -12,8 +12,8 @@ class DocumentUpdate extends Component
     public $document;
     public $title;
     public $description;
-    public $tagsToDeleteIds = [];
     public $tagsThatExist;
+    public $tagsToDeleteIds = [];
     public $tagsToInsert = [];
     public $tag;
 
@@ -37,9 +37,12 @@ class DocumentUpdate extends Component
     /* Method to insert a new tag to the tag insertion array */
     public function addTag()
     {
+        // Trimming values before using them
+        $this->tag = trim($this->tag);
+        
         // Validation rules for the new tag
         $this->validate([
-            'tag' => 'between:1,255',
+            'tag' => 'required|between:3,255',
         ]);
 
         if (count($this->tagsThatExist) + count($this->tagsToInsert) >= 5) {
@@ -74,6 +77,10 @@ class DocumentUpdate extends Component
 
     public function update()
     {
+        // Trimming values before using them
+        $this->title = trim($this->title);
+        $this->description = trim($this->description);
+
         // Validation rules for the document and its metadata
         $this->validate([
             'title' => 'required|between:1,255',
@@ -81,12 +88,12 @@ class DocumentUpdate extends Component
         ]);
 
         try {
-            // Update document in database
             $newDocumentData = [
                 'title' => $this->title,
                 'description' => $this->description,
             ];
 
+            // Update document in database
             $this->document->updateDocument(
                 $newDocumentData, 
                 $this->tagsToInsert, 
@@ -96,7 +103,10 @@ class DocumentUpdate extends Component
             // Resetting the properties
             $this->tagsToDeleteIds = [];
             $this->tagsToInsert = [];
-            $this->tagsThatExist = Tag::where('document_id', $this->document->id)->get();
+            $this->tagsThatExist = Tag::where(
+                'document_id', 
+                $this->document->id
+            )->get();
             
             session()->flash('successMessage', 'Updated successfully.');
 
