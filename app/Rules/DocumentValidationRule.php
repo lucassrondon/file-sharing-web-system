@@ -14,7 +14,12 @@ class DocumentValidationRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $allowedMimeTypes = ['application/pdf'];
+        $allowedMimeTypes = [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'application/msword',
+        ];
         $maximumSize      = 1024333434433;
 
         if (!in_array($value->getMimeType(), $allowedMimeTypes)) {

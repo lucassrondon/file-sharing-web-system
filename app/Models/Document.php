@@ -41,6 +41,15 @@ class Document extends Model
 
     /* Methods for livewire components */
 
+    /* Method to get the file extension */
+    public function getExtension()
+    {
+        $array = explode('.', $this->file_name);
+        $extension = $array[count($array)-1];
+
+        return $extension;
+    }
+
     /* Method to update a document */
     public function updateDocument(
         array $newDocumentData, 
