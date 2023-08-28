@@ -42,6 +42,7 @@
             </div>
         </div>
 
+        <!-- Div to show the tags of a document -->
         <label for="" class="font-medium text-sm text-gray-700">Tags:</label>
         <div class="w-full flex gap-4 flex-wrap bg-gray-100 p-2 rounded-md drop-shadow-2xl">
             @foreach ($document->tags as $tag)
@@ -56,6 +57,11 @@
             <p class="break-all font-semibold text-sm text-black uppercase tracking-widest">{{ $document->created_at }}</p>
         </div>
         
+        <!-- 
+        Div to show the buttons. There will be two buttons:
+        the update and delete buttons or the confirm and cancel
+        deletion buttons
+        -->
         <div class="w-full flex gap-4 justify-center sm:max-w-lg bg-white mt-4">
             @if ($documentDeletion != true)
                 <a href="{{ route('document-update', ['document' => $document->id]) }}">
@@ -75,5 +81,4 @@
             @endif
         </div>
     </div>
-        
 </div>

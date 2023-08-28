@@ -79,10 +79,9 @@ class DocumentUpload extends Component
             $this->document = '';
             $this->tags = [];
         
-            session()->flash('successMessage', 'File uploaded successfully!');
+            session()->flash('successMessage', 'File uploaded successfully');
             
         } catch (\Exception $ex) {
-            dd($ex->getMessage());
             abort(500, 'Something went wrong.');
         }
     }

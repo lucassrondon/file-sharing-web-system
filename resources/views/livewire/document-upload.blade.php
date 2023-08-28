@@ -68,10 +68,14 @@
 
                 <!-- Upload success and failure message divs -->
                 @if (session()->has('successMessage'))
-                    <div class="text-sm text-green-600 mt-2">{{ session('successMessage') }}</div>
+                    <div class="break-all text-sm text-green-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
+                        {{ session('successMessage') }}
+                    </div>
                 @endif
                 @if (session()->has('failMessage'))
-                    <div class="text-sm text-red-600 mt-2">{{ session('failMessage') }}</div>
+                    <div class="break-all text-sm text-red-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
+                        {{ session('failMessage') }}
+                    </div>
                 @endif
                 
                 <button type="submit" class="w-full px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">

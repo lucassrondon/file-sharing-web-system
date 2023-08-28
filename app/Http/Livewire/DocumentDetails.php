@@ -44,11 +44,10 @@ class DocumentDetails extends Component
     {
         try {
             $this->document->delete();
-            session()->flash('successMessage', 'Document deleted successfully.');
+            session()->flash('successMessage', 'Document deleted successfully');
             return redirect()->to('/your-uploads');
         } catch (\Exception $ex) {
-            session()->flash('failMessage', 'Something went wrong.');
-            return redirect()->to('/your-uploads');
+            abort(500, 'Something went wrong.');
         }
     }
     

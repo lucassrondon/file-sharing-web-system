@@ -108,7 +108,7 @@ class DocumentUpdate extends Component
                 $this->document->id
             )->get();
             
-            session()->flash('successMessage', 'Updated successfully.');
+            session()->flash('successMessage', 'Updated successfully');
 
         } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');

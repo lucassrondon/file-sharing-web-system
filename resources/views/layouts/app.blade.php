@@ -14,7 +14,7 @@
         <!-- Scripts -->
 
         <!-- Font awesome script -->
-        <script src="https://kit.fontawesome.com/0ca14f61f4.js" crossorigin="anonymous"></script>
+        <!-- <script src="https://kit.fontawesome.com/0ca14f61f4.js" crossorigin="anonymous"></script> -->
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
