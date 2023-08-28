@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\DocumentList;
 use App\Http\Livewire\DocumentUpdate;
 use App\Http\Livewire\DocumentUpload;
-use Illuminate\Support\Facades\Route;
+use App\Http\Livewire\DocumentDetails;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::middleware([
     Route::get('/document-upload', DocumentUpload::class)->name('document-upload');
     Route::get('/your-uploads', DocumentList::class)->name('your-uploads');
     Route::get('/document-update/{document}', DocumentUpdate::class)->name('document-update');
+    Route::get('/document-details/{document}', DocumentDetails::class)->name('document-details');
 });
 
 
