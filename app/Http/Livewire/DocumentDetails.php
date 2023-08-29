@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Document;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentDetails extends Component
@@ -43,12 +44,18 @@ class DocumentDetails extends Component
     public function confirmDocumentDelete()
     {
         try {
-            $this->document->delete();
+            $this->document->deleteDocumentFromAll();
+
             session()->flash('successMessage', 'Document deleted successfully');
             return redirect()->to('/your-uploads');
         } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');
         }
+    }
+
+    public function download()
+    {
+        return $this->document->download();
     }
     
     public function render()

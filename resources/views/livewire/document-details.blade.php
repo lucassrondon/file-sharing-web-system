@@ -7,7 +7,12 @@
     </x-slot>
 
     <div class="w-full sm:max-w-lg flex flex-col gap-4 rounded-md drop-shadow-2xl bg-white p-6">
-        <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-10">
+        <div class="flex justify-between">
+            <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-10">
+            <button wire:click="download" class="w-10 bg-white border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <img src="{{ asset('icons/download_icon.png') }}" alt="Download">
+            </button>
+        </div>
 
         <label for="" class="font-medium text-sm text-gray-700">Title:</label>
         <div class="w-full bg-gray-100 p-2 rounded-md drop-shadow-2xl">
@@ -37,7 +42,7 @@
             <div class="w-1/2">
                 <label for="" class="font-medium text-sm text-gray-700">Size:</label>
                 <div class=" bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-                    <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->size }}</p>
+                    <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->formatFilesize() }}</p>
                 </div>
             </div>
         </div>
