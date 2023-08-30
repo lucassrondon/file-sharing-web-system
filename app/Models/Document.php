@@ -16,6 +16,7 @@ class Document extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'institution_id',
         'title',
         'description',
         'size',
@@ -54,7 +55,9 @@ class Document extends Model
 
     /* Method to update a document */
     public function updateDocument(
-        array $newDocumentData, 
+        string $title,
+        string $description,
+        string $institutionName, 
         array $newTagsNames, 
         array $tagsToDeleteIds
     )
@@ -62,8 +65,19 @@ class Document extends Model
         try {
             DB::beginTransaction();
 
+            // Getting the id of the institution, which can be null
+            if ($institutionName == '' || $institutionName == null) {
+                $institutionId = null;
+            } else {
+                $institutionId = Institution::getInstitutionId($institutionName);
+            }
+
             // Update document in database
-            $this->update($newDocumentData);
+            $this->update([
+                'title' => $title,
+                'description' => $description,
+                'institution_id' => $institutionId,
+            ]);
 
             // Delete tags
             Tag::whereIn('id', $tagsToDeleteIds)->delete();
@@ -88,8 +102,9 @@ class Document extends Model
     {
         try {
             $filePath = $this->file_name;
+            $suggestedFilename = $this->sanitizeFilename($this->title);
 
-            return Storage::disk('local')->download($filePath);
+            return Storage::disk('local')->download($filePath, $suggestedFilename);
         } catch (\Exception $ex) {
             abort(500, 'File not found');
         }
@@ -127,6 +142,36 @@ class Document extends Model
         $factor = floor((strlen($this->size) - 1) / 3);
 
         return sprintf("%.{$decimals}f", $this->size / pow(1024, $factor)) . @$size[$factor];
+    }
+
+    /* Sanitizing a string to be a valid filename */
+    public function sanitizeFilename($filename) 
+    {   
+        /* 
+        Goes through a string and if the character is numeric
+        or is alpha, adds to the valid filename. If the character
+        is not valid, replaces it by '_' if the last character is not
+        '_' already
+        */
+        $suggestedFilename = '';
+        foreach (str_split($filename) as $char) {
+            if (ctype_alpha($char) || is_numeric($char)) {
+                $suggestedFilename = $suggestedFilename . $char;
+            } elseif (strlen($suggestedFilename) > 0) {
+                if ($suggestedFilename[strlen($suggestedFilename)-1] != '_') {
+                    $suggestedFilename = $suggestedFilename . '_';
+                }
+            }
+
+            if (strlen($suggestedFilename) >= 50) {
+                break;
+            }
+        }
+
+        if ($suggestedFilename == '' || strlen($suggestedFilename) < 3) {
+            $suggestedFilename = 'document';
+        }
+        return $suggestedFilename;
     }
 
     /* Method to upload a document */

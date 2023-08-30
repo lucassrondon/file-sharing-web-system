@@ -21,9 +21,19 @@
                     @error('description') <p class="text-sm text-red-600 mt-2">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label for="document-institution" class="block font-medium text-sm text-gray-700">Institution:</label>
+                    <input type="text" list="institutions" id="document-institution" wire:model="institution" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
+                    
+                    <datalist id="institutions">
+                        @foreach ($databaseInstitutions as $institution)
+                            <option value="{{ $institution->institution_name }}">
+                        @endforeach
+                    </datalist>
+                </div>
+
                 <div class="flex flex-col">
                     <label for="" class="block font-medium text-sm text-gray-700">Tags:</label>
-
                     <!-- 
                         Div for inputting tags. Gets hidden 
                         if the max amount of tags is reached 
@@ -41,13 +51,13 @@
                     <div class="flex gap-4 mt-1 flex-wrap">
                         @foreach ($tagsThatExist as $index => $tag)
                             <button type="button" class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" wire:click="addTagToDeleteList( {{ $tag->id }})">
-                                {{ $tag->name }}
+                                × {{ $tag->name }}
                             </button>
                         @endforeach
 
                         @foreach ($tagsToInsert as $index => $tag)
                             <button type="button" class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" wire:click="removeTagFromInsertList( {{ $index }})">
-                                {{ $tag }}
+                                × {{ $tag }}
                             </button>
                         @endforeach
                     </div>

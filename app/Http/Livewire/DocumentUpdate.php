@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Tag;
 use Livewire\Component;
 use App\Models\Document;
+use App\Models\Institution;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentUpdate extends Component
@@ -12,10 +13,12 @@ class DocumentUpdate extends Component
     public $document;
     public $title;
     public $description;
+    public $institution;
     public $tagsThatExist;
     public $tagsToDeleteIds = [];
     public $tagsToInsert = [];
     public $tag;
+    public $databaseInstitutions;
 
     /* Tryng to get the document passed in the url */
     public function mount(Document $document)
@@ -23,14 +26,28 @@ class DocumentUpdate extends Component
         // Gets the user class
         $user = Auth::user();
         $this->document = $document;
-        $this->tagsThatExist = Tag::where('document_id', $this->document->id)->get();
 
         // Checks if document belongs to user
         if ($this->document->user_id != $user->id) {
             abort(404, 'Post not found');
         } else {
+            /* 
+            Populating the properties so the inputs
+            in the update page are filled with the 
+            current data
+             */
             $this->title = $document->title;
             $this->description = $document->description;
+            if (isset($this->document->institution)) {
+                $this->institution = $this->document->institution->institution_name;
+            }
+            $this->tagsThatExist = Tag::where('document_id', $this->document->id)->get();
+
+            // Getting the trusted institutions to list as options 
+            $this->databaseInstitutions = Institution::where(
+                'official', 
+                1
+            )->get();
         }
     }
 
@@ -80,22 +97,21 @@ class DocumentUpdate extends Component
         // Trimming values before using them
         $this->title = trim($this->title);
         $this->description = trim($this->description);
+        $this->institution = trim($this->institution);
 
         // Validation rules for the document and its metadata
         $this->validate([
             'title' => 'required|between:1,255',
             'description' => 'max:255',
+            'institution' => 'max:255',
         ]);
 
         try {
-            $newDocumentData = [
-                'title' => $this->title,
-                'description' => $this->description,
-            ];
-
             // Update document in database
             $this->document->updateDocument(
-                $newDocumentData, 
+                $this->title,
+                $this->description,
+                $this->institution, 
                 $this->tagsToInsert, 
                 $this->tagsToDeleteIds
             );
