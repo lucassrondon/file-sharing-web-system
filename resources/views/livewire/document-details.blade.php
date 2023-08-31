@@ -9,58 +9,70 @@
     <div class="w-full sm:max-w-lg flex flex-col gap-4 rounded-md drop-shadow-2xl bg-white p-6">
         <div class="flex justify-between">
             <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-10">
-            <button wire:click="download" class="w-10 bg-white border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <button wire:click="download" type="button" class="w-10 bg-white border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 <img src="{{ asset('icons/download_icon.png') }}" alt="Download">
             </button>
         </div>
 
-        <label for="" class="font-medium text-sm text-gray-700">Title:</label>
-        <div class="w-full bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-            <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->title }}</p>
-        </div>
+        <x-label for="">Title:</x-label>
+        <x-doc-details-background>
+            <x-upper-title> 
+                {{ $document->title }} 
+            </x-upper-title>
+        </x-doc-details-background>
 
-        <label for="" class="font-medium text-sm text-gray-700">Description:</label>
-        <div class="w-full bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-            <p class="break-all text-gray-500 text-sm leading-relaxed">{{ $document->description }}</p>
-        </div>
+        <x-label for="">Description:</x-label>
+        <x-doc-details-background>
+            <x-description-style class="break-all"> 
+                {{ $document->description }} 
+            </x-description-style>
+        </x-doc-details-background>
 
-        <label for="" class="font-medium text-sm text-gray-700">Institution:</label>
-        <div class="w-full bg-gray-100 p-2 rounded-md drop-shadow-2xl">
+        <x-label for="">Institution:</x-label>
+        <x-doc-details-background>
             @if (isset($document->institution))
-                <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->institution->institution_name }}</p>
+                <x-upper-title> 
+                    {{ $document->institution->institution_name }} 
+                </x-upper-title>
             @endif
-        </div>
+        </x-doc-details-background>
 
         <div class="flex gap-4">
             <div class="w-1/2">
-                <label for="" class="font-medium text-sm text-gray-700">Type:</label>
-                <div class="bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-                    <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->getExtension() }}</p>
-                </div>
+                <x-label for="">Type:</x-label>
+                <x-doc-details-background>
+                    <x-upper-title> 
+                        {{ $document->getExtension() }} 
+                    </x-upper-title>
+                </x-doc-details-background>
             </div>
 
             <div class="w-1/2">
-                <label for="" class="font-medium text-sm text-gray-700">Size:</label>
-                <div class=" bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-                    <p class="break-all font-semibold text-black uppercase tracking-widest">{{ $document->formatFilesize() }}</p>
-                </div>
+                <x-label for="">Size:</x-label>
+                <x-doc-details-background>
+                    <x-upper-title> 
+                        {{ $document->formatFilesize() }} 
+                    </x-upper-title>
+                </x-doc-details-background>
             </div>
         </div>
 
         <!-- Div to show the tags of a document -->
-        <label for="" class="font-medium text-sm text-gray-700">Tags:</label>
-        <div class="w-full flex gap-4 flex-wrap bg-gray-100 p-2 rounded-md drop-shadow-2xl">
+        <x-label for="">Tags:</x-label>
+        <x-doc-details-background class="flex gap-4 flex-wrap">
             @foreach ($document->tags as $tag)
                 <div class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest">
                     {{ $tag->name }}
                 </div>
             @endforeach
-        </div>
+        </x-doc-details-background>
 
-        <label for="" class="font-medium text-sm text-gray-700">Creation:</label>
-        <div class="bg-gray-100 p-2 rounded-md drop-shadow-2xl">
-            <p class="break-all font-semibold text-sm text-black uppercase tracking-widest">{{ $document->created_at }}</p>
-        </div>
+        <x-label for="">Creation:</x-label>
+        <x-doc-details-background>
+            <x-upper-title class="text-sm"> 
+                {{ $document->created_at }} 
+            </x-upper-title>
+        </x-doc-details-background>
         
         <!-- 
         Div to show the buttons. There will be two buttons:
@@ -70,19 +82,22 @@
         <div class="w-full flex gap-4 justify-center sm:max-w-lg bg-white mt-4">
             @if ($documentDeletion != true)
                 <a href="{{ route('document-update', ['document' => $document->id]) }}">
-                    <button class="px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Update</button>
+                    <x-button class="">
+                        Update
+                    </x-button>
                 </a>
-                <button wire:click="setDocumentToDelete" class="px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                
+                <x-danger-button wire:click="setDocumentToDelete">
                     Delete
-                </button>
+                </x-danger-button>
             @else
-                <button wire:click="confirmDocumentDelete" class="px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <x-danger-button wire:click="confirmDocumentDelete">
                     Confirm
-                </button>
+                </x-danger-button>
 
-                <button wire:click="cancelDocumentDelete" class="px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <x-button wire:click="cancelDocumentDelete">
                     Cancel
-                </button>
+                </x-button>
             @endif
         </div>
     </div>

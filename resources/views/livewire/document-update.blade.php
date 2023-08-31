@@ -9,21 +9,22 @@
     <div class="w-full flex flex-col justify-center items-center">
         <form wire:submit.prevent="update" enctype="multipart/form-data" class="w-full sm:max-w-lg">
             <div class="flex flex-col gap-6 p-6">
-                <div class="mb-6">
-                    <label for="document-title" class="block font-medium text-sm text-gray-700">Title:</label>
-                    <input value="{{ $title }}" type="text" id="document-title" wire:model="title" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
-                    @error('title') <p class="text-sm text-red-600 mt-2">{{ $message }}</p> @enderror
+
+                <div>
+                    <x-label for="document-title">Title:</x-label>
+                    <x-input value="{{ $title }}" type="text" id="document-title" wire:model="title" class="block mt-1 w-full"/>
+                    @error('title') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
                 
-                <div class="mb-6">
-                    <label for="document-description" class="block font-medium text-sm text-gray-700">Description:</label>
-                    <input value="{{ $description }}" type="text" id="document-description" wire:model="description" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
-                    @error('description') <p class="text-sm text-red-600 mt-2">{{ $message }}</p> @enderror
+                <div>
+                    <x-label for="document-description">Description:</x-label>
+                    <x-input value="{{ $description }}" type="text" id="document-description" wire:model="description" class="block mt-1 w-full"/>
+                    @error('description') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
 
                 <div>
-                    <label for="document-institution" class="block font-medium text-sm text-gray-700">Institution:</label>
-                    <input type="text" list="institutions" id="document-institution" wire:model="institution" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
+                    <x-label for="document-institution">Institution:</x-label>
+                    <x-input type="text" list="institutions" id="document-institution" wire:model="institution" class="block mt-1 w-full"/>
                     
                     <datalist id="institutions">
                         @foreach ($databaseInstitutions as $institution)
@@ -33,52 +34,45 @@
                 </div>
 
                 <div class="flex flex-col">
-                    <label for="" class="block font-medium text-sm text-gray-700">Tags:</label>
+                    <x-label for="">Tags:</x-label>
                     <!-- 
                         Div for inputting tags. Gets hidden 
                         if the max amount of tags is reached 
                     -->
                     @if (count($tagsThatExist) + count($tagsToInsert) < 5)
                         <div class="flex mt-2 gap-4">
-                            <input type="text" id="tag" wire:model="tag" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
-                            <button type="button" class="w-1/4 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" wire:click="addTag">
+                            <x-input type="text" id="tag" wire:model="tag" class="borderblock mt-1 w-full"/>
+                            <x-button type="button" class="" wire:click="addTag">
                                 Add
-                            </button>
+                            </x-button>
                         </div>
                     @endif
 
                     <!-- Div to show added tags -->
                     <div class="flex gap-4 mt-1 flex-wrap">
                         @foreach ($tagsThatExist as $index => $tag)
-                            <button type="button" class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" wire:click="addTagToDeleteList( {{ $tag->id }})">
+                            <x-button type="button" class="truncate mt-1" wire:click="addTagToDeleteList( {{ $tag->id }})">
                                 × {{ $tag->name }}
-                            </button>
+                            </x-button>
                         @endforeach
 
                         @foreach ($tagsToInsert as $index => $tag)
-                            <button type="button" class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" wire:click="removeTagFromInsertList( {{ $index }})">
+                            <x-button type="button" class="truncate mt-1" wire:click="removeTagFromInsertList( {{ $index }})">
                                 × {{ $tag }}
-                            </button>
+                            </x-button>
                         @endforeach
                     </div>
-                    @error('tag') <p class="text-sm text-red-600 mt-2">{{ $message }}</p> @enderror
+                    @error('tag') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
 
                 <!-- Update success and failure message divs -->
-                @if (session()->has('successMessage'))
-                    <div class="break-all text-sm text-green-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
-                        {{ session('successMessage') }}
-                    </div>
-                @endif
-                @if (session()->has('failMessage'))
-                    <div class="break-all text-sm text-red-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
-                        {{ session('failMessage') }}
-                    </div>
-                @endif
+                <x-success-or-fail-message/>
                 
-                <button type="submit" class="w-full px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    Save
-                </button>
+                <div class="flex justify-center items-center">
+                    <x-button type="submit">
+                        Save
+                    </x-button>
+                </div>
             </div>
         </form>
     </div>

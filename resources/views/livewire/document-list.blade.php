@@ -7,31 +7,31 @@
     </x-slot>
 
     <!-- Upload success and failure message divs -->
-    @if (session()->has('successMessage'))
-        <div class="break-all text-sm text-green-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
-            {{ session('successMessage') }}
-        </div>
-    @endif
-    @if (session()->has('failMessage'))
-        <div class="break-all text-sm text-red-600 mt-1 px-4 py-2 text-center border border-transparent rounded-md font-semibold uppercase tracking-widest">
-            {{ session('failMessage') }}
-        </div>
-    @endif
+    <x-success-or-fail-message/>
 
     <!-- Div to list the documents as links -->
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-3 p-6">
+    <div class=" grid grid-cols-1 gap-4 md:grid-cols-3 p-6">
             <!-- Listing the documents; each document is a link to open it with details -->
             @foreach ($documentsList as $document)
             <a href="{{ route('document-details', $document->id) }}" class="flex flex-col gap-4 scale-100 p-6 bg-white from-gray-700/50 via-transparent rounded-lg shadow-2xl shadow-gray-500/20 motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-indigo-500">
                 <!-- Icon of the document type and the creation date of the document -->
                 <div class="flex justify-between">
                     <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-12">
-                    <p class=" text-gray-500 text-sm leading-relaxed">{{ $document->created_at }}</p>
+                    <x-description-style> 
+                        {{ $document->created_at }} 
+                    </x-description-style>
                 </div>
                 
                 <!-- Title and description of the document -->
-                <h2 class="p-2 truncate font-semibold text-x text-black uppercase tracking-widest bg-gray-500 border border-transparent rounded-md"> {{ $document->title }}</h2>
-                <p class="truncate text-gray-500 text-sm leading-relaxed">{{ $document->description }}</p>
+                <x-doc-details-background>
+                    <x-upper-title overflowCase="truncate"> 
+                        {{ $document->title }} 
+                    </x-upper-title>
+                </x-doc-details-background>
+                
+                <x-description-style class="truncate">
+                    {{ $document->description }}
+                </x-description-style>
             </a>
             @endforeach
     </div>
