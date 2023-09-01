@@ -52,11 +52,11 @@
             </div>
         @endif
 
-        <!-- Name -->
+        <!-- Username -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
-            <x-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="state.name" required autocomplete="name" />
-            <x-input-error for="name" class="mt-2" />
+            <x-label for="username" value="Username" />
+            <x-input id="username" type="text" class="mt-1 block w-full" wire:model.defer="state.username" required autocomplete="username" />
+            <x-input-error for="username" class="mt-2" />
         </div>
 
         <!-- Email -->
