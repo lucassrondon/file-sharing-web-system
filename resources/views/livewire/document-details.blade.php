@@ -9,7 +9,7 @@
     <div class="w-full sm:max-w-lg flex flex-col gap-4 rounded-md drop-shadow-2xl bg-white p-6">
         <div class="flex justify-between">
             <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-10">
-            <button wire:click="download" type="button" class="w-10 bg-white border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <button wire:click="download" type="button" class="w-10 bg-white border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 <img src="{{ asset('icons/download_icon.png') }}" alt="Download">
             </button>
         </div>
