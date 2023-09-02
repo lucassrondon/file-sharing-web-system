@@ -12,7 +12,9 @@
     @if (count($documentsList) == 0)
         <!-- Image with message when user has no uploads -->
         <div class="flex justify-center items-center">
-            <img src="{{ asset('images/no_uploads_logo.png') }}" alt="">
+            <a href="{{ route('document-upload') }}">
+                <img src="{{ asset('images/no_uploads_logo.png') }}" alt="">
+            </a>
         </div>
     @else
         <!-- Div to list the documents as links -->
@@ -24,7 +26,7 @@
                     <div class="flex justify-between">
                         <img src="{{ asset('icons/'.$document->getExtension().'_icon.png') }}" alt="Logo" class="w-12">
                         <x-description-style> 
-                            {{ $document->created_at }} 
+                            {{ $document->formatCreatedAt() }} 
                         </x-description-style>
                     </div>
                     
@@ -37,6 +39,10 @@
                     
                     <x-description-style class="truncate">
                         {{ $document->description }}
+                    </x-description-style>
+
+                    <x-description-style class="break-all flex justify-end">
+                        by: {{ $document->user->username }}
                     </x-description-style>
                 </a>
                 @endforeach

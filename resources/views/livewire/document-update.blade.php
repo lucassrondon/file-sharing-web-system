@@ -12,19 +12,19 @@
 
                 <div>
                     <x-label for="document-title">Title:</x-label>
-                    <x-input value="{{ $title }}" type="text" id="document-title" wire:model="title" class="block mt-1 w-full"/>
+                    <x-input placeholder="Document title" value="{{ $title }}" type="text" id="document-title" wire:model="title" class="block mt-1 w-full"/>
                     @error('title') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
                 
                 <div>
                     <x-label for="document-description">Description:</x-label>
-                    <x-input value="{{ $description }}" type="text" id="document-description" wire:model="description" class="block mt-1 w-full"/>
+                    <x-input placeholder="Document description" value="{{ $description }}" type="text" id="document-description" wire:model="description" class="block mt-1 w-full"/>
                     @error('description') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
 
                 <div>
                     <x-label for="document-institution">Institution:</x-label>
-                    <x-input type="text" list="institutions" id="document-institution" wire:model="institution" class="block mt-1 w-full"/>
+                    <x-input placeholder="Document institution" type="text" list="institutions" id="document-institution" wire:model="institution" class="block mt-1 w-full"/>
                     
                     <datalist id="institutions">
                         @foreach ($databaseInstitutions as $institution)
@@ -41,7 +41,7 @@
                     -->
                     @if (count($tagsThatExist) + count($tagsToInsert) < 5)
                         <div class="flex mt-2 gap-4">
-                            <x-input type="text" id="tag" wire:model="tag" class="borderblock mt-1 w-full"/>
+                            <x-input placeholder="Key word" type="text" id="tag" wire:model="tag" class="borderblock mt-1 w-full"/>
                             <x-button type="button" class="" wire:click="addTag">
                                 Add
                             </x-button>

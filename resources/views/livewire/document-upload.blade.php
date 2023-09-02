@@ -11,19 +11,19 @@
             <div class="flex flex-col gap-6 p-6">
                 <div>
                     <x-label for="document-title">*Title:</x-label>
-                    <x-input type="text" id="document-title" wire:model="title" class="w-full mt-1"/>
+                    <x-input placeholder="Document title" type="text" id="document-title" wire:model="title" class="w-full mt-1"/>
                     @error('title') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
                 
                 <div>
                     <x-label for="document-description">Description:</x-label>
-                    <x-input type="text" id="document-description" wire:model="description" class="w-full mt-1"/>
+                    <x-input placeholder="Document description" type="text" id="document-description" wire:model="description" class="w-full mt-1"/>
                     @error('description') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
 
                 <div>
                     <x-label for="document-institution">Institution:</x-label>
-                    <x-input type="text" list="institutions" id="document-institution" wire:model="institution" class="w-full mt-1"/>
+                    <x-input placeholder="Document institution" type="text" list="institutions" id="document-institution" wire:model="institution" class="w-full mt-1"/>
                     
                     <datalist id="institutions">
                         @foreach ($databaseInstitutions as $institution)
@@ -47,7 +47,7 @@
                     <x-label for="">Tags:</x-label>
                     @if (sizeof($tags) < 5)
                         <div class="flex mt-2 gap-4">
-                            <x-input type="text" id="tag" wire:model="tag" class="w-3/4 mt-1"/>
+                            <x-input placeholder="Key word" type="text" id="tag" wire:model="tag" class="w-3/4 mt-1"/>
                             <x-button type="button" wire:click="addTag" class="w-1/4">
                                 Add
                             </x-button>

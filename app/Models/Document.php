@@ -144,6 +144,13 @@ class Document extends Model
         return sprintf("%.{$decimals}f", $this->size / pow(1024, $factor)) . @$size[$factor];
     }
 
+    /* Converts the create_at to a more friendly format */
+    public function formatCreatedAt()
+    {
+        $date = date_create($this->created_at);
+        return date_format($date,"d/m/Y");
+    }
+
     /* Sanitizing a string to be a valid filename */
     public function sanitizeFilename($filename) 
     {   

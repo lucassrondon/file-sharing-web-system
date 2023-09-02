@@ -61,18 +61,31 @@
         <x-label for="">Tags:</x-label>
         <x-doc-details-background class="flex gap-4 flex-wrap">
             @foreach ($document->tags as $tag)
-                <div class="truncate mt-1 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest">
+                <div class="truncate px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest">
                     {{ $tag->name }}
                 </div>
             @endforeach
         </x-doc-details-background>
 
-        <x-label for="">Creation:</x-label>
-        <x-doc-details-background>
-            <x-upper-title class="text-sm"> 
-                {{ $document->created_at }} 
-            </x-upper-title>
-        </x-doc-details-background>
+        <div class="flex gap-4">
+            <div class="w-1/2">
+                <x-label for="">Creation:</x-label>
+                <x-doc-details-background>
+                    <x-upper-title class="text-sm"> 
+                        {{ $document->formatCreatedAt() }} 
+                    </x-upper-title>
+                </x-doc-details-background>
+            </div>
+
+            <div class="w-1/2">
+                <x-label for="">By:</x-label>
+                <x-doc-details-background>
+                    <x-upper-title class="text-sm"> 
+                        {{ $document->user->username }} 
+                    </x-upper-title>
+                </x-doc-details-background>
+            </div>
+        </div>
         
         <!-- 
         Div to show the buttons. There will be two buttons:
