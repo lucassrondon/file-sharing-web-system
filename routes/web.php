@@ -18,7 +18,7 @@ use App\Http\Livewire\DocumentDetails;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing-page');
 });
 
 Route::middleware([
