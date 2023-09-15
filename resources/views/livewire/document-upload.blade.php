@@ -8,7 +8,7 @@
 
     <div class="w-full flex flex-col justify-center items-center">
         <form wire:submit.prevent="upload" enctype="multipart/form-data" class="w-full sm:max-w-lg">
-            <div class="flex flex-col gap-6 p-6">
+            <x-upload-update-square>
                 <div>
                     <x-label for="document-title">*Title:</x-label>
                     <x-input placeholder="Document title" type="text" id="document-title" wire:model="title" class="w-full mt-1"/>
@@ -74,7 +74,7 @@
                         Upload
                     </x-button>
                 </div>
-            </div>
+            </x-upload-update-square>
         </form>
     </div>
 </div>

@@ -8,20 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class DocumentList extends Component
 {
-    public $user;
     public $documentsList;
 
     public function mount()
     {
-        // Gets the user class
-        $this->user = Auth::user();
+
         $this->list();
     }
 
     public function list()
     {
         // Lists uploads for this user
-        $this->documentsList = Document::where('user_id', $this->user->id)->get();
+        $this->documentsList = Document::where('user_id', Auth::user()->id)
+            ->get();
     }
 
     /* 

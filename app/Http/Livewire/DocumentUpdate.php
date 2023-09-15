@@ -20,91 +20,25 @@ class DocumentUpdate extends Component
     public $tag;
     public $databaseInstitutions;
 
-    /* Tryng to get the document passed in the url */
+    /* Initializing the properties */
     public function mount(Document $document)
     {
-        // Gets the user class
-        $user = Auth::user();
-        $this->document = $document;
-
-        // Checks if document belongs to user
-        if ($this->document->user_id != $user->id) {
-            abort(404, 'Post not found');
-        } else {
-            /* 
-            Populating the properties so the inputs
-            in the update page are filled with the 
-            current data
-             */
-            $this->title = $document->title;
-            $this->description = $document->description;
-            if (isset($this->document->institution)) {
-                $this->institution = $this->document->institution->institution_name;
-            }
-            $this->tagsThatExist = Tag::where('document_id', $this->document->id)->get();
-
-            // Getting the trusted institutions to list as options 
-            $this->databaseInstitutions = Institution::where(
-                'official', 
-                1
-            )->get();
+        $this->title = $this->document->title;
+        $this->tagsThatExist = $document->getTags();
+        $this->description = $this->document->description;
+        // Getting the trusted institutions to list as options 
+        $this->databaseInstitutions = Institution::where('official', 1)
+            ->get();
+        if (isset($this->document->institution)) {
+            $this->institution = $this->document->institution->institution_name;
         }
-    }
-
-    /* Method to insert a new tag to the tag insertion array */
-    public function addTag()
-    {
-        // Trimming values before using them
-        $this->tag = trim($this->tag);
-        
-        // Validation rules for the new tag
-        $this->validate([
-            'tag' => 'required|between:3,255',
-        ]);
-
-        if (count($this->tagsThatExist) + count($this->tagsToInsert) >= 5) {
-            abort(500, 'Something went wrong.');
-        } else {
-            $this->tagsToInsert[] = $this->tag;
-        }
-        $this->tag = null;
-    }
-
-    /* Remove a tag from the insertion array */
-    public function removeTagFromInsertList($index)
-    {
-        unset($this->tagsToInsert[$index]);
-    }
-
-    /* 
-    Add the id of a tag that already exists
-    in the deletion array, so they can be deleted
-    if the update is saved 
-    */
-    public function addTagToDeleteList(int $tagToDeleteId)
-    {
-        foreach ($this->tagsThatExist as $key => $tag) {
-            if ($tag->id == $tagToDeleteId) {
-                $this->tagsToDeleteIds[] = $tagToDeleteId;
-                unset($this->tagsThatExist[$key]);
-                break;
-            }
-        }
+    
     }
 
     public function update()
     {
-        // Trimming values before using them
-        $this->title = trim($this->title);
-        $this->description = trim($this->description);
-        $this->institution = trim($this->institution);
-
-        // Validation rules for the document and its metadata
-        $this->validate([
-            'title' => 'required|between:1,255',
-            'description' => 'max:255',
-            'institution' => 'max:255',
-        ]);
+        $this->userCanChangeOrFail();
+        $this->validateDocumentInputs();
 
         try {
             // Update document in database
@@ -117,18 +51,106 @@ class DocumentUpdate extends Component
             );
 
             // Resetting the properties
-            $this->tagsToDeleteIds = [];
-            $this->tagsToInsert = [];
-            $this->tagsThatExist = Tag::where(
-                'document_id', 
-                $this->document->id
-            )->get();
+            $this->resetProperties();
             
             session()->flash('successMessage', 'Updated successfully');
 
         } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');
         }
+    }
+
+    /* Insert a new tag to the tag insertion array */
+    public function addTag()
+    {
+        $this->validateTagInput();
+
+        if ($this->tagLimitReached()) {
+            return;
+        } elseif (!$this->tagExists()) {
+            $this->insertTag();
+        }
+        $this->tag = null;
+    }
+
+    /* Remove a tag from the insertion array */
+    public function removeTagFromInsertList($index)
+    {
+        unset($this->tagsToInsert[$index]);
+    }
+
+    /* Remove a tag that already exists */
+    public function addTagToDeleteList(int $tagToDeleteId)
+    {
+        foreach ($this->tagsThatExist as $key => $tag) {
+            if ($tag->id == $tagToDeleteId) {
+                $this->tagsToDeleteIds[] = $tagToDeleteId;
+                unset($this->tagsThatExist[$key]);
+                break;
+            }
+        }
+    }
+
+    /* Aborting if user does not  have permission */
+    private function userCanChangeOrFail()
+    {
+        if (!Auth::user()->can('change-document', $this->document)) {
+            abort(403, 'Forbidden');
+        }
+    }
+
+    private function insertTag()
+    {
+        $this->tagsToInsert[] = $this->tag;
+    }
+
+    private function tagLimitReached()
+    {
+        return count($this->tagsThatExist) + 
+               count($this->tagsToInsert) >= 5;
+    }
+
+    private function tagExists()
+    {   
+        return in_array($this->tag, $this->tagsToInsert) ||
+               $this->tagsThatExist->contains('name', $this->tag);
+    }
+
+    private function validateDocumentInputs()
+    {
+        // Trimming values before using them
+        $this->title = trim($this->title);
+        $this->description = trim($this->description);
+        $this->institution = trim($this->institution);
+
+        // Validation rules for the document and its metadata
+        $this->validate([
+            'title' => 'required|between:1,255',
+            'description' => 'max:255',
+            'institution' => 'max:255',
+        ]);
+    }
+
+    private function validateTagInput()
+    {
+        // Trimming values before using them
+        $this->tag = trim($this->tag);
+        
+        // Validation rules for the new tag
+        $this->validate([
+            'tag' => 'required|between:3,255',
+        ]);
+    }
+
+    /* Reset properties after updating document */
+    private function resetProperties()
+    {
+        $this->tagsToDeleteIds = [];
+        $this->tagsToInsert = [];
+        $this->tagsThatExist = Tag::where(
+            'document_id', 
+            $this->document->id
+        )->get();
     }
 
     public function render()

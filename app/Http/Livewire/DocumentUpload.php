@@ -33,25 +33,15 @@ class DocumentUpload extends Component
     /* Method to upload a new document */
     public function upload()
     {   
-        // Trimming values before using them
-        $this->title = trim($this->title);
-        $this->description = trim($this->description);
-        $this->institution = trim($this->institution);
-
-        // Validation rules for the document and its metadata
-        $this->validate([
-            'title' => 'required|between:1,255',
-            'description' => 'max:255',
-            'institution' => 'max:255',
-            'document' => ['required', new DocumentValidationRule()],
-        ]);
+        $this->validateDocumentInputs();
         
         try {
             // Gets the user id
             $userId = Auth::id();
 
             // Store the document
-            $generatedDocumentName = $this->document->store('uploads', 'local');
+            $generatedDocumentName = $this->document
+                ->store('uploads', 'local');
 
             // Put the document data into an array
             $documentData = [
@@ -72,14 +62,12 @@ class DocumentUpload extends Component
                 $this->tags
             );
 
-            // Clear input fields after file upload
-            $this->title = '';
-            $this->description = '';
-            $this->institution = '';
-            $this->document = '';
-            $this->tags = [];
+            $this->resetProperties();
         
-            session()->flash('successMessage', 'File uploaded successfully');
+            session()->flash(
+                'successMessage', 
+                'File uploaded successfully'
+            );
             
         } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');
@@ -89,20 +77,13 @@ class DocumentUpload extends Component
     /* Method to add a new tag to tags array */
     public function addTag()
     {
-        // Trimming values before using them
-        $this->tag = trim($this->tag);
+        $this->validateTagInput();
 
-        // Validation rules for tag
-        $this->validate([
-            'tag' => 'required|between:3,255',
-        ]);
-
-        // Verify if there alredy are 5 tags or if tag already exists
-        if (count($this->tags) >= 5) {
-            abort(500, 'Something went wrong.');
-        } elseif (!in_array($this->tag, $this->tags)) {
-            $this->tags[] = $this->tag;
-            $this->tag = null;
+        // Verify if there are alredy 5 tags or if tag already exists
+        if ($this->tagLimitReached()) {
+            return;
+        } elseif (!$this->tagExists()) {
+            $this->insertTag();
         }
         $this->tag = null;
     }
@@ -111,6 +92,58 @@ class DocumentUpload extends Component
     public function removeTag($tagToRemove)
     {
         unset($this->tags[$tagToRemove]);
+    }
+
+    private function validateTagInput()
+    {
+        // Trimming values before using them
+        $this->tag = trim($this->tag);
+
+        // Validation rules for tag
+        $this->validate([
+            'tag' => 'required|between:3,255',
+        ]);
+    }
+
+    private function validateDocumentInputs()
+    {
+        // Trimming values before using them
+        $this->title = trim($this->title);
+        $this->description = trim($this->description);
+        $this->institution = trim($this->institution);
+
+        // Validation rules for the document and its metadata
+        $this->validate([
+            'title' => 'required|between:1,255',
+            'description' => 'max:255',
+            'institution' => 'max:255',
+            'document' => ['required', new DocumentValidationRule()],
+        ]);
+    }
+
+    private function resetProperties()
+    {
+        // Clear input fields after file upload
+        $this->title = '';
+        $this->description = '';
+        $this->institution = '';
+        $this->document = '';
+        $this->tags = [];
+    }
+
+    private function tagLimitReached()
+    {
+        return count($this->tags) >= 5;
+    }
+
+    private function tagExists()
+    {
+        return in_array($this->tag, $this->tags);
+    }
+
+    private function insertTag()
+    {
+        $this->tags[] = $this->tag;
     }
 
     public function render()

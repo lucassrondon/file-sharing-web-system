@@ -29,7 +29,7 @@
             </x-upper-title>
 
             <x-description-style class="hidden sm:flex text-xl">
-                Your place to find and share homework
+                YOUR PLACE TO SHARE HOMEWORK
             </x-description-style>
         </div>
 

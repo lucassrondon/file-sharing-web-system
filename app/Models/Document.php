@@ -102,9 +102,14 @@ class Document extends Model
     {
         try {
             $filePath = $this->file_name;
-            $suggestedFilename = $this->sanitizeFilename($this->title);
+            $suggestedFilename = $this
+                ->sanitizeFilename($this->title);
 
-            return Storage::disk('local')->download($filePath, $suggestedFilename);
+            return Storage::disk('local')
+                ->download(
+                    $filePath, 
+                    $suggestedFilename
+                );
         } catch (\Exception $ex) {
             abort(500, 'File not found');
         }
@@ -181,6 +186,11 @@ class Document extends Model
         return $suggestedFilename;
     }
 
+    public function getTags()
+    {
+        return Tag::where('document_id', $this->id)->get();
+    }
+
     /* Method to upload a document */
     public static function uploadDocument(
         array $documentData, 
@@ -197,7 +207,7 @@ class Document extends Model
 
             // If any name is passed as the institution of the file,
             // this gets the id and save in the document.
-            if ($institution != null && strlen($institution) > 0) {
+            if ($institution != null && $institution != '') {
                 $documentModel->institution_id = Institution::getInstitutionId($institution);
                 $documentModel->save();
             }

@@ -87,31 +87,34 @@
             </div>
         </div>
         
-        <!-- 
-        Div to show the buttons. There will be two buttons:
-        the update and delete buttons or the confirm and cancel
-        deletion buttons
-        -->
-        <div class="w-full flex gap-4 justify-center sm:max-w-lg bg-white mt-4">
-            @if ($documentDeletion != true)
-                <a href="{{ route('document-update', ['document' => $document->id]) }}">
-                    <x-button class="">
-                        Update
-                    </x-button>
-                </a>
-                
-                <x-danger-button wire:click="setDocumentToDelete">
-                    Delete
-                </x-danger-button>
-            @else
-                <x-danger-button wire:click="confirmDocumentDelete">
-                    Confirm
-                </x-danger-button>
+        <!-- Show delete and update buttons only if user can change the document -->
+        @can('change-document', $document)
+            <!-- 
+            Div to show the buttons. There will be two buttons:
+            the update and delete buttons or the confirm and cancel
+            deletion buttons
+            -->
+            <div class="w-full flex gap-4 justify-center sm:max-w-lg bg-white mt-4">
+                @if ($documentDeletion != true)
+                    <a href="{{ route('document-update', ['document' => $document->id]) }}">
+                        <x-button class="">
+                            Update
+                        </x-button>
+                    </a>
+                    
+                    <x-danger-button wire:click="setDocumentToDelete">
+                        Delete
+                    </x-danger-button>
+                @else
+                    <x-danger-button wire:click="confirmDocumentDelete">
+                        Confirm
+                    </x-danger-button>
 
-                <x-button wire:click="cancelDocumentDelete">
-                    Cancel
-                </x-button>
-            @endif
-        </div>
+                    <x-button wire:click="cancelDocumentDelete">
+                        Cancel
+                    </x-button>
+                @endif
+            </div>
+        @endcan
     </div>
 </div>

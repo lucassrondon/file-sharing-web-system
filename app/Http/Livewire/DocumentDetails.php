@@ -4,7 +4,6 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Document;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentDetails extends Component
@@ -15,19 +14,12 @@ class DocumentDetails extends Component
     /* Tryng to get the document passed in the url */
     public function mount(Document $document)
     {
-        // Gets the user class
-        $user = Auth::user();
-
-        // Checks if document belongs to user
-        if ($document->user_id != $user->id) {
-            abort(404, 'Post not found');
-        } else {
-            $this->document = $document;
-        }
+        
     }
 
-    /* Sets a flag to true to indicate the intention
-       of deletion before actually deleting
+    /* 
+    Sets a flag to true to indicate the intention
+    of deletion before actually deleting
     */
     public function setDocumentToDelete()
     {
@@ -43,10 +35,16 @@ class DocumentDetails extends Component
     /* Deleting the document on delete confirmation */
     public function confirmDocumentDelete()
     {
+        $this->userCanChangeOrFail();
+        
         try {
             $this->document->deleteDocumentFromAll();
 
-            session()->flash('successMessage', 'Document deleted successfully');
+            session()->flash(
+                'successMessage', 
+                'Document deleted successfully'
+            );
+            
             return redirect()->to('/your-uploads');
         } catch (\Exception $ex) {
             abort(500, 'Something went wrong.');
@@ -56,6 +54,14 @@ class DocumentDetails extends Component
     public function download()
     {
         return $this->document->download();
+    }
+
+    /* Aborting if user does not  have permission */
+    private function userCanChangeOrFail()
+    {
+        if (!Auth::user()->can('change-document', $this->document)) {
+            abort(403, 'Forbidden');
+        }
     }
     
     public function render()

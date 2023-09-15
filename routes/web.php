@@ -21,18 +21,37 @@ Route::get('/', function () {
     return view('landing-page');
 });
 
+/* Auth routes */
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/document-upload', DocumentUpload::class)->name('document-upload');
-    Route::get('/your-uploads', DocumentList::class)->name('your-uploads');
-    Route::get('/document-update/{document}', DocumentUpdate::class)->name('document-update');
-    Route::get('/document-details/{document}', DocumentDetails::class)->name('document-details');
+
+    Route::get(
+        '/document-upload', 
+        DocumentUpload::class
+    )->name('document-upload');
+
+    Route::get(
+        '/your-uploads', 
+        DocumentList::class
+    )->name('your-uploads');
+    
+    Route::get(
+        '/document-update/{document}', 
+        DocumentUpdate::class
+    )->name('document-update')
+     ->middleware('owns.document');
+
+    Route::get(
+        '/document-details/{document}', 
+        DocumentDetails::class
+    )->name('document-details');
 });
 
 
