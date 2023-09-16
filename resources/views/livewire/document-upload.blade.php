@@ -47,8 +47,8 @@
                     <x-label for="">Tags:</x-label>
                     @if (sizeof($tags) < 5)
                         <div class="flex mt-2 gap-4">
-                            <x-input placeholder="Key word" type="text" id="tag" wire:model="tag" class="w-3/4 mt-1"/>
-                            <x-button type="button" wire:click="addTag" class="w-1/4">
+                            <x-input placeholder="Key word" type="text" id="tag" wire:model="tag" class="borderblock mt-1 w-full"/>
+                            <x-button type="button" wire:click="addTag" class="">
                                 Add
                             </x-button>
                         </div>

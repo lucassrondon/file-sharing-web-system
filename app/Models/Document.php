@@ -191,6 +191,19 @@ class Document extends Model
         return Tag::where('document_id', $this->id)->get();
     }
 
+    public static function search($searchText)
+    {
+        $documents = Self::where('title', 'LIKE', "%{$searchText}%")
+            ->orWhereHas('institution', function ($query) use ($searchText) {
+                $query->where('institution_name', 'LIKE', "%{$searchText}%");
+            })
+            ->orWhereHas('tags', function ($query) use ($searchText) {
+                $query->where('name', 'LIKE', "%{$searchText}%");
+            })->get();
+
+        return $documents;
+    }
+
     /* Method to upload a document */
     public static function uploadDocument(
         array $documentData, 
