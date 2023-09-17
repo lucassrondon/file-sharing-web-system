@@ -45,5 +45,43 @@
         @stack('modals')
 
         @livewireScripts
+        <script>
+            /* When the user makes a search, the component
+            sends an event to the browser so it can push the 
+            search into the history stack, so when the user
+            navigates through the history, the pages can be 
+            loaded again
+             */
+            window.addEventListener('hasSearch', event => {
+                window.history.pushState(
+                    { page: event.detail.searchtext }, 
+                    'Dashboard', 
+                    '/dashboard/' + event.detail.searchtext
+                );
+            });
+
+            /* 
+            Listenig for browser history navigation and
+            handling the action for each route
+            */
+            window.addEventListener('popstate', event => {
+                const currentPath = window.location.pathname;
+
+                /* dashboard route shows the search results;
+                so if the user navigates through the browser
+                history, the search text of that route is sent 
+                to the componentt so it can load the data for that page  */
+                if (currentPath.startsWith('/dashboard')) {
+                    let searchText = false;
+
+                    parts = currentPath.split('/');
+                    if (parts.length == 3) {
+                        searchText = parts[2];
+                    }
+                    livewire.emit('popState', searchText);
+                }
+            });
+
+        </script>
     </body>
 </html>

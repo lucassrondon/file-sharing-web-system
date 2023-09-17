@@ -13,7 +13,7 @@
     <div class="w-full">
         @if($searchOn)
             <div class="w-full flex items-center justify-center gap-2 mt-1 p-2 bg-white">
-                <x-input class="md:w-2/5 w-4/5 bg-gray-100" wire:model="searchText"/>
+                <x-input placeholder="Search a file" class="md:w-2/5 w-4/5 bg-gray-100" wire:model="searchText"/>
                 <button class="hover:scale-125 active:scale-100" wire:click="search()">
                     <img src="{{ asset('icons/search_icon.png') }}" alt="" class="">
                 </button>
@@ -30,7 +30,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="" class="w-60">
 
                 <div class="w-4/5 sm:w-2/4 md:w-1/4 flex gap-2">
-                    <x-input autofocus class="w-full" wire:model="searchText"/>
+                    <x-input placeholder="Search a file" autofocus class="w-full" wire:model="searchText"/>
                     <button class="hover:scale-125 active:scale-100" wire:click="search()">
                         <img src="{{ asset('icons/search_icon.png') }}" alt="" class="">
                     </button>

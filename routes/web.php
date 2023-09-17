@@ -29,7 +29,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/dashboard',
+    Route::get('/dashboard/{searchtext?}',
     Dashboard::class
     )->name('dashboard');
 
