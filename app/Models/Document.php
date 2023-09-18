@@ -193,15 +193,16 @@ class Document extends Model
 
     public static function search($searchText)
     {
-        $documents = Self::where('title', 'LIKE', "%{$searchText}%")
+        $paginator = Self::where('title', 'LIKE', "%{$searchText}%")
             ->orWhereHas('institution', function ($query) use ($searchText) {
                 $query->where('institution_name', 'LIKE', "%{$searchText}%");
             })
             ->orWhereHas('tags', function ($query) use ($searchText) {
                 $query->where('name', 'LIKE', "%{$searchText}%");
-            })->get();
-
-        return $documents;
+            })->paginate(10);
+            
+        $paginator->useTailwind();
+        return $paginator;
     }
 
     /* Method to upload a document */

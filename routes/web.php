@@ -6,6 +6,7 @@ use App\Http\Livewire\DocumentUpdate;
 use App\Http\Livewire\DocumentUpload;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\DocumentDetails;
+use App\Http\Livewire\SearchResults;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +30,13 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/dashboard/{searchtext?}',
+    Route::get('/dashboard',
     Dashboard::class
     )->name('dashboard');
+
+    Route::get('/search',
+    SearchResults::class
+    )->name('search');
 
     Route::get(
         '/document-upload', 

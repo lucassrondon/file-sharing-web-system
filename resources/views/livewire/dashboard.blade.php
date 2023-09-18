@@ -6,39 +6,20 @@
         </h2>
     </x-slot>
     
-    <!--
-        Div of searches
-        When be hidden when applying filters
-    -->
-    <div class="w-full">
-        @if($searchOn)
-            <div class="w-full flex items-center justify-center gap-2 mt-1 p-2 bg-white">
-                <x-input placeholder="Search a file" class="md:w-2/5 w-4/5 bg-gray-100" wire:model="searchText"/>
-                <button class="hover:scale-125 active:scale-100" wire:click="search()">
-                    <img src="{{ asset('icons/search_icon.png') }}" alt="" class="">
-                </button>
-            </div>
+    <div class="bg-gray-100 h-full w-full flex flex-col items-center">
 
-            <x-list-docs :documentsList="$documentsList">
-                <!-- Img for when there is no docs found -->
-                <img src="{{ asset('images/no_matches_logo.png') }}" alt="">
-            </x-list-docs>
+        <img src="{{ asset('images/logo.png') }}" alt="" class="w-60">
 
-        @else
-            <div class="bg-gray-100 h-full w-full flex flex-col items-center">
+        <form action="/search" mehtod="get" class="w-4/5 sm:w-2/4 md:w-1/4 flex gap-2">
+            <input type="hidden" name="page" value="1">
+            <x-input name="searchtext" placeholder="Search a file" autofocus class="w-full" />
+            <button class="hover:scale-125 active:scale-100">
+                <img src="{{ asset('icons/search_icon.png') }}" alt="search">
+            </button>
+        </form>
 
-                <img src="{{ asset('images/logo.png') }}" alt="" class="w-60">
-
-                <div class="w-4/5 sm:w-2/4 md:w-1/4 flex gap-2">
-                    <x-input placeholder="Search a file" autofocus class="w-full" wire:model="searchText"/>
-                    <button class="hover:scale-125 active:scale-100" wire:click="search()">
-                        <img src="{{ asset('icons/search_icon.png') }}" alt="" class="">
-                    </button>
-                </div>
-
-            </div>
-        @endif
     </div>
+
 
     <div>
         <!-- MAKE APPLY FILTERS HERE -->
