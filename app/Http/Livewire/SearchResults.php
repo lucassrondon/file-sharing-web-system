@@ -8,16 +8,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SearchResults extends Component
 {
-    protected $paginator;
-    public string $searchText;
+    protected $links;
+    public string $searchValue;
     public $documentsList = [];
 
     public function mount(Request $request)
     {
-        if ($request->get('searchtext') !== null) {
-            $this->searchText = $request->get('searchtext');
+        if ($request->get('searchvalue') !== null) {
+            $this->searchValue = $request->get('searchvalue');
         } else {
-            $this->searchText = ''; 
+            $this->searchValue = ''; 
         }
         
         $this->validateInput();
@@ -28,17 +28,18 @@ class SearchResults extends Component
     /* Sets documents and pagination */
     private function searchDocuments()
     {
-        $this->paginator = Document::search($this->searchText);
-        $this->documentsList = $this->paginator->items();
+        $paginator = Document::search($this->searchValue);
+        $this->documentsList = $paginator->getCollection();
+        $this->links = $paginator->withPath("/search?searchvalue={$this->searchValue}")->links();
     }
 
     /* Validates the current searchText */
     private function validateInput()
     {
-        $this->searchText = trim($this->searchText);
+        $this->searchValue = trim($this->searchValue);
 
         $this->validate([
-            'searchText' => 'required|between:3,255',
+            'searchValue' => 'required|between:3,255',
         ]);
     }
     

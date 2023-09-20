@@ -6,7 +6,7 @@
     </div>
 @else
     <!-- Div to list the documents as links -->
-    <div class=" grid grid-cols-1 gap-4 md:grid-cols-3 p-6">
+    <div class=" grid grid-cols-1 gap-4 md:grid-cols-4 sm:grid-cols-3 p-6">
         <!-- Listing the documents; each document is a link to open it with details -->
         @foreach ($documentsList as $document)
             <a href="{{ route('document-details', $document->id) }}" class="flex flex-col gap-4 scale-100 p-6 bg-white from-gray-700/50 via-transparent rounded-lg shadow-2xl shadow-gray-500/20 motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-green-500">

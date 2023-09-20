@@ -10,14 +10,13 @@
 
         <img src="{{ asset('images/logo.png') }}" alt="" class="w-60">
 
-        <form action="/search" mehtod="get" class="w-4/5 sm:w-2/4 md:w-1/4 flex gap-2">
-            <input type="hidden" name="page" value="1">
-            <x-input name="searchtext" placeholder="Search a file" autofocus class="w-full" />
-            <button class="hover:scale-125 active:scale-100">
+        <div class="w-4/5 sm:w-2/4 md:w-1/4 flex gap-2">
+            <x-input wire:model="searchTextInput" placeholder="Search a file" autofocus class="w-full" />
+            <button wire:click="search()" class="hover:scale-125 active:scale-100">
                 <img src="{{ asset('icons/search_icon.png') }}" alt="search">
             </button>
-        </form>
-
+        </div>
+        @error('searchTextInput') <x-span-danger> {{ $message }} </x-span-danger> @enderror
     </div>
 
 
