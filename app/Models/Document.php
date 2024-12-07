@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Institution;
+use App\Models\Subject;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class Document extends Model
         'id',
         'user_id',
         'institution_id',
+        'subject_id',
         'title',
         'description',
         'size',
@@ -35,6 +37,11 @@ class Document extends Model
     public function institution()
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 
     public function tags()
@@ -57,7 +64,8 @@ class Document extends Model
     public function updateDocument(
         string $title,
         string $description,
-        string $institutionName, 
+        string $institutionName,
+        string $subjectName,
         array $newTagsNames, 
         array $tagsToDeleteIds
     )
@@ -72,11 +80,19 @@ class Document extends Model
                 $institutionId = Institution::getInstitutionId($institutionName);
             }
 
+            // Getting the id of the subject, which can be null
+            if ($subjectName == '' || $subjectName == null) {
+                $subjectId = null;
+            } else {
+                $subjectId = Subject::getSubjectId($subjectName);
+            }
+
             // Update document in database
             $this->update([
                 'title' => $title,
                 'description' => $description,
                 'institution_id' => $institutionId,
+                'subject_id' => $subjectId,
             ]);
 
             // Delete tags
@@ -208,7 +224,8 @@ class Document extends Model
     /* Method to upload a document */
     public static function uploadDocument(
         array $documentData, 
-        string|null $institution, 
+        string|null $institution,
+        string|null $subject,
         array $tags
     )
     {
@@ -223,8 +240,12 @@ class Document extends Model
             // this gets the id and save in the document.
             if ($institution != null && $institution != '') {
                 $documentModel->institution_id = Institution::getInstitutionId($institution);
-                $documentModel->save();
             }
+            if ($subject != null && $subject != '') {
+                $documentModel->subject_id = Subject::getSubjectId($subject);
+            }
+
+            $documentModel->save();
             
             // Inserting tags in database
             Tag::insertTags($documentModel->id, $tags);

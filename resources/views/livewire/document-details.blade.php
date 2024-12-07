@@ -37,6 +37,15 @@
             @endif
         </x-doc-details-background>
 
+        <x-label for="">Subject:</x-label>
+        <x-doc-details-background>
+            @if (isset($document->subject))
+                <x-upper-title> 
+                    {{ $document->subject->subject_name }} 
+                </x-upper-title>
+            @endif
+        </x-doc-details-background>
+
         <div class="flex gap-4">
             <div class="w-1/2">
                 <x-label for="">Type:</x-label>

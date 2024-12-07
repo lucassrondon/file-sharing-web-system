@@ -33,6 +33,12 @@
                     </datalist>
                 </div>
 
+                <div>
+                    <x-label for="document-subject">Subject:</x-label>
+                    <x-input placeholder="Document subject" value="{{ $subject }}" type="text" id="document-subject" wire:model="subject" class="block mt-1 w-full"/>
+                    @error('subject') <x-span-danger> {{ $message }} </x-span-danger> @enderror
+                </div>
+
                 <div class="flex flex-col">
                     <x-label for="">Tags:</x-label>
                     <!-- 

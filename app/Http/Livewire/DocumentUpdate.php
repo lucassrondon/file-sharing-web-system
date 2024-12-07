@@ -6,6 +6,7 @@ use App\Models\Tag;
 use Livewire\Component;
 use App\Models\Document;
 use App\Models\Institution;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentUpdate extends Component
@@ -14,6 +15,7 @@ class DocumentUpdate extends Component
     public $title;
     public $description;
     public $institution;
+    public $subject;
     public $tagsThatExist;
     public $tagsToDeleteIds = [];
     public $tagsToInsert = [];
@@ -32,7 +34,9 @@ class DocumentUpdate extends Component
         if (isset($this->document->institution)) {
             $this->institution = $this->document->institution->institution_name;
         }
-    
+        if (isset($this->document->subject)) {
+            $this->subject = $this->document->subject->subject_name;
+        }
     }
 
     public function update()
@@ -45,7 +49,8 @@ class DocumentUpdate extends Component
             $this->document->updateDocument(
                 $this->title,
                 $this->description,
-                $this->institution, 
+                $this->institution,
+                $this->subject, 
                 $this->tagsToInsert, 
                 $this->tagsToDeleteIds
             );
@@ -122,12 +127,14 @@ class DocumentUpdate extends Component
         $this->title = trim($this->title);
         $this->description = trim($this->description);
         $this->institution = trim($this->institution);
+        $this->subject = trim($this->subject);
 
         // Validation rules for the document and its metadata
         $this->validate([
             'title' => 'required|between:1,255',
             'description' => 'max:255',
             'institution' => 'max:255',
+            'subject' => 'max:255',
         ]);
     }
 

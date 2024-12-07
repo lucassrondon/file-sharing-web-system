@@ -18,6 +18,7 @@ class DocumentUpload extends Component
     public $tags = [];
     public $databaseInstitutions;
     public $institution;
+    public $subject;
     
     use WithFileUploads;
 
@@ -58,7 +59,8 @@ class DocumentUpload extends Component
             // Gets all the data of the document and saves it
             Document::uploadDocument(
                 $documentData, 
-                $this->institution, 
+                $this->institution,
+                $this->subject,
                 $this->tags
             );
 
@@ -117,6 +119,7 @@ class DocumentUpload extends Component
             'title' => 'required|between:1,255',
             'description' => 'max:255',
             'institution' => 'max:255',
+            'subject' => 'max:255',
             'document' => ['required', new DocumentValidationRule()],
         ]);
     }
@@ -127,6 +130,7 @@ class DocumentUpload extends Component
         $this->title = '';
         $this->description = '';
         $this->institution = '';
+        $this->subject = '';
         $this->document = '';
         $this->tags = [];
     }

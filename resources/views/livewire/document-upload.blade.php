@@ -30,7 +30,13 @@
                             <option value="{{ $institution->institution_name }}">
                         @endforeach
                     </datalist>
+                    @error('institution') <x-span-danger> {{ $message }} </x-span-danger> @enderror
+                </div>
 
+                <div>
+                    <x-label for="document-subject">Subject:</x-label>
+                    <x-input placeholder="Document subject" type="text" id="document-subject" wire:model="subject" class="w-full mt-1"/>
+                    @error('subject') <x-span-danger> {{ $message }} </x-span-danger> @enderror
                 </div>
 
                 <div>
