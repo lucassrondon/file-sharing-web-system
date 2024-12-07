@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('institution_id')->nullable();
             $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('set null');
+            $table->unsignedBigInteger('subject_id')->nullable();
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('set null');
             $table->string('title');
             $table->string('description')->nullable();
             $table->unsignedBigInteger('size');
