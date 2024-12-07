@@ -51,7 +51,6 @@
                         <option value="">Select a document type</option>
                         <option value="application/pdf">PDF</option>
                         <option value="text/plain">Txt</option>
-                        <option value="text/csv">Csv</option>
                         <option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Microsoft Word</option>
                         <option value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">Excel</option>
                     </select>

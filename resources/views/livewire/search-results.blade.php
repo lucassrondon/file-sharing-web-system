@@ -49,7 +49,6 @@
                             <option value="">Select Document Type</option>
                             <option value="application/pdf" {{ $mimeType === 'application/pdf' ? 'selected' : '' }}>PDF</option>
                             <option value="text/plain" {{ $mimeType === 'text/plain' ? 'selected' : '' }}>Txt</option>
-                            <option value="text/csv" {{ $mimeType === 'text/csv' ? 'selected' : '' }}>Csv</option>
                             <option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document" {{ $mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'selected' : '' }}>Microsoft Word</option>
                             <option value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {{ $mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ? 'selected' : '' }}>Excel</option>
                         </select>
