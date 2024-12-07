@@ -207,7 +207,79 @@ class Document extends Model
         return Tag::where('document_id', $this->id)->get();
     }
 
-    public static function search($searchText)
+    public static function search($filters)
+    {
+        $query = self::query();
+
+        // If the "any" field is not empty, search across all fields
+        if (!empty($filters['any'])) {
+            dump('Mensagem exibida no terminal');
+            $any = $filters['any'];
+            $query->where(function ($q) use ($any) {
+                $q->where('title', 'LIKE', "%{$any}%")
+                ->orWhere('description', 'LIKE', "%{$any}%")
+                ->orWhereHas('subject', function ($subQuery) use ($any) {
+                    $subQuery->where('subject_name', 'LIKE', "%{$any}%");
+                })
+                ->orWhere('mime_type', 'LIKE', "%{$any}%")
+                ->orWhere('text_content', 'LIKE', "%{$any}%")
+                ->orWhereHas('institution', function ($subQuery) use ($any) {
+                    $subQuery->where('institution_name', 'LIKE', "%{$any}%");
+                })
+                ->orWhereHas('tags', function ($subQuery) use ($any) {
+                    $subQuery->where('name', 'LIKE', "%{$any}%");
+                });
+            });
+        } else {
+            // Apply specific filters if "any" is empty
+            if (!empty($filters['title'])) {
+                $query->where('title', 'LIKE', "%{$filters['title']}%");
+            }
+
+            if (!empty($filters['description'])) {
+                $query->where('description', 'LIKE', "%{$filters['description']}%");
+            }
+
+            if (!empty($filters['institution'])) {
+                $query->whereHas('institution', function ($subQuery) use ($filters) {
+                    $subQuery->where('institution_name', 'LIKE', "%{$filters['institution']}%");
+                });
+            }
+
+            if (!empty($filters['subject'])) {
+                $query->whereHas('subject', function ($subQuery) use ($filters) {
+                    $subQuery->where('subject_name', 'LIKE', "%{$filters['subject']}%");
+                });
+            }
+
+            if (!empty($filters['mimeType'])) {
+                $query->where('mime_type', $filters['mimeType']);
+            }
+
+            if (!empty($filters['startDate'])) {
+                $query->whereDate('created_at', '>=', $filters['startDate']);
+            }
+
+            if (!empty($filters['tag'])) {
+                $query->whereHas('tags', function ($subQuery) use ($filters) {
+                    $subQuery->where('name', 'LIKE', "%{$filters['tag']}%");
+                });
+            }
+
+            if (!empty($filters['searchInText'])) {
+                $query->where('text_content', 'LIKE', "%{$filters['searchInText']}%");
+            }
+        }
+
+        // Paginate and return results
+        $paginator = $query->paginate(10);
+        $paginator->useTailwind();
+
+        return $paginator;
+    }
+
+
+/*     public static function search($searchText)
     {
         $paginator = Self::where('title', 'LIKE', "%{$searchText}%")
             ->orWhereHas('institution', function ($query) use ($searchText) {
@@ -219,7 +291,7 @@ class Document extends Model
             
         $paginator->useTailwind();
         return $paginator;
-    }
+    } */
 
     /* Method to upload a document */
     public static function uploadDocument(

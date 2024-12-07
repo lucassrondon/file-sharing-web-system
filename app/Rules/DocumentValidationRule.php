@@ -19,6 +19,8 @@ class DocumentValidationRule implements ValidationRule
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'text/plain',
             'application/msword',
+            'text/csv',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
         $maximumSize      = 1024333434433;
 

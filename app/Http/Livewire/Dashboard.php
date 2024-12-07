@@ -7,24 +7,29 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public $searchTextInput;
+    public $any;
+    public $title;
+    public $description;
+    public $institution;
+    public $subject;
+    public $mimeType;
+    public $startDate;
+    public $tag;
+    public $searchInText;
+
 
     public function search()
     {
-        $this->validateInput();
-
         return redirect()->route('search', [
-            'searchvalue' => $this->searchTextInput
-        ]);
-    }
-
-    /* Validates the current searchText */
-    private function validateInput()
-    {
-        $this->searchTextInput = trim($this->searchTextInput);
-
-        $this->validate([
-            'searchTextInput' => 'required|between:3,255',
+            'any' => $this->any,
+            'title' => $this->title,
+            'description' => $this->description,
+            'institution' => $this->institution,
+            'subject' => $this->subject,
+            'mimeType' => $this->mimeType,
+            'startDate' => $this->startDate,
+            'tag' => $this->tag,
+            'searchInText' => $this->searchInText
         ]);
     }
     

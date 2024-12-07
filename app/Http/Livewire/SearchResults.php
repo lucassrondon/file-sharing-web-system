@@ -9,18 +9,27 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchResults extends Component
 {
     protected $links;
-    public string $searchValue;
+    public $any;
+    public $title;
+    public $description;
+    public $institution;
+    public $subject;
+    public $mimeType;
+    public $startDate;
+    public $tag;
+    public $searchInText;
     public $documentsList = [];
 
     public function mount(Request $request)
     {
-        if ($request->get('searchvalue') !== null) {
-            $this->searchValue = $request->get('searchvalue');
-        } else {
-            $this->searchValue = ''; 
+        // Define the fields to handle
+        $fields = ['any', 'title', 'description', 'institution', 'subject', 'mimeType', 'startDate', 'tag', 'searchInText'];
+
+        // Loop through each field and set the value
+        foreach ($fields as $field) {
+            $this->{$field} = $request->get($field) !== null ? $request->get($field) : '';
         }
-        
-        $this->validateInput();
+
 
         $this->searchDocuments();
     }
@@ -28,19 +37,33 @@ class SearchResults extends Component
     /* Sets documents and pagination */
     private function searchDocuments()
     {
-        $paginator = Document::search($this->searchValue);
+        $paginator = Document::search([
+            'any' => $this->any,
+            'title' => $this->title,
+            'description' => $this->description,
+            'institution' => $this->institution,
+            'subject' => $this->subject,
+            'mimeType' => $this->mimeType,
+            'startDate' => $this->startDate,
+            'tag' => $this->tag,
+            'searchInText' => $this->searchInText
+        ]);
         $this->documentsList = $paginator->getCollection();
-        $this->links = $paginator->withPath("/search?searchvalue={$this->searchValue}")->links();
+        $this->links = $paginator->withPath("/search?{$this->getSearchParameters()}")->links();
     }
 
-    /* Validates the current searchText */
-    private function validateInput()
+    private function getSearchParameters()
     {
-        $this->searchValue = trim($this->searchValue);
+        // Define the fields to include in the query string
+        $fields = ['any', 'title', 'description', 'institution', 'subject', 'mimeType', 'startDate', 'tag', 'searchInText'];
 
-        $this->validate([
-            'searchValue' => 'required|between:3,255',
-        ]);
+        // Build the query string dynamically
+        $queryString = implode('&', array_map(function ($field) {
+            return "{$field}=" . urlencode($this->{$field});
+        }, $fields));
+
+        // Return the query string
+        return $queryString;
     }
     
     public function render()
