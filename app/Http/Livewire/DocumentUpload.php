@@ -8,6 +8,7 @@ use App\Models\Institution;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use App\Rules\DocumentValidationRule;
+use App\Services\FileTextExtractor;
 
 class DocumentUpload extends Component
 {
@@ -36,13 +37,17 @@ class DocumentUpload extends Component
     {   
         $this->validateDocumentInputs();
         
-        try {
+
             // Gets the user id
             $userId = Auth::id();
 
             // Store the document
             $generatedDocumentName = $this->document
                 ->store('uploads', 'local');
+            
+            // Extract document text
+            $extractor = new FileTextExtractor();
+            $extracted_text    = $extractor->extractTextFromDocument($this->document);
 
             // Put the document data into an array
             $documentData = [
@@ -51,6 +56,7 @@ class DocumentUpload extends Component
             'description' => $this->description,
             'size'        => $this->document->getSize(),
             'mime_type'   => $this->document->getMimeType(),
+            'text_content' => $extracted_text,
             'file_name'   => $generatedDocumentName,
             'downloads'   => 0,
             ];
@@ -71,9 +77,7 @@ class DocumentUpload extends Component
                 'File uploaded successfully'
             );
             
-        } catch (\Exception $ex) {
-            abort(500, 'Something went wrong.');
-        }
+
     }
 
     /* Method to add a new tag to tags array */

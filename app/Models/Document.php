@@ -23,6 +23,7 @@ class Document extends Model
         'description',
         'size',
         'mime_type',
+        'text_content',
         'file_name',
         'downloads',
     ];
@@ -213,7 +214,6 @@ class Document extends Model
 
         // If the "any" field is not empty, search across all fields
         if (!empty($filters['any'])) {
-            dump('Mensagem exibida no terminal');
             $any = $filters['any'];
             $query->where(function ($q) use ($any) {
                 $q->where('title', 'LIKE', "%{$any}%")
@@ -272,7 +272,7 @@ class Document extends Model
         }
 
         // Paginate and return results
-        $paginator = $query->paginate(10);
+        $paginator = $query->paginate(12);
         $paginator->useTailwind();
 
         return $paginator;

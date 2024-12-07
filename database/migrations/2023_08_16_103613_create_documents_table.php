@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('size');
             $table->string('mime_type');
             $table->string('file_name');
-            $table->string('text_content')->nullable();
+            $table->longText('text_content')->nullable();
             $table->unsignedBigInteger('downloads');
             $table->timestamps();
         });
